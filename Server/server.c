@@ -105,7 +105,7 @@ int main()
    
     printf("Creating a socket...\n");
     int socketfd ; // The socket descripter
-    socketfd = socket(host_info_list->ai_family, host_info_list->ai_socktype, host_info_list->ai_protocol);
+    socketfd = socket(AF_INET, SOCK_STREAM, host_info_list->ai_protocol);
     if (socketfd == -1) printf("socket error\n");
     printf("Binding socket...\n");
 
