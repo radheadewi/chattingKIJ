@@ -278,13 +278,14 @@ int main()
         else
         {
             printf("Connection accepted. Using new socketfd : %d\n", new_sd );
-        }
-
-
-        if( pthread_create( &thread_id , NULL ,  connection_handler , (void*) &new_sd) < 0)
-        {
-            perror("could not create thread");
-            return 1;
+            int cek = pthread_create( &thread_id , NULL ,  connection_handler , (void*) &new_sd);
+            if(cek < 0)
+            {
+                printf("Gagal membuat thread");
+                return 1;
+            }
+            else
+                printf("Thread %d telah dibuat.\n",new_sd);
         }
 
         
