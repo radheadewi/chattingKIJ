@@ -1,30 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package ClientChat_KIJ;
-
 /**
  *
  * @author Fandazky23
  */
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 public class myEchoClient {
     public Form_login clientku= null;
     public Main_client mainClient=null;
     private int PORT;
     private InetAddress host;
     private BufferedReader buff_read;
-    DataInputStream inputS = null;
-    DataOutputStream outputS = null;
+    //DataInputStream inputS = null;
+    //DataOutputStream outputS = null;
     public BufferedOutputStream buff_OS;
     public Socket link = null;
     public String username;
@@ -45,60 +36,92 @@ public class myEchoClient {
         try
         {
             link = new Socket(host, PORT);
-            inputS = new DataInputStream(link.getInputStream());
-            outputS = new DataOutputStream(link.getOutputStream());
-            buff_OS = new BufferedOutputStream(link.getOutputStream());
-            
-            //UIclient.writelog(infoClient.nama + " has been connected to server\n");
+            buff_OS = new BufferedOutputStream(link.getOutputStream());    
         }
         catch(Exception ex)
         {
                     
         }
-        String Protokol_conn = "";
+        String Protokol_conn = "LOGIN:"+ username +":";
         ClientListen listener = new ClientListen();
         listener.start();
         buff_OS.write(Protokol_conn.getBytes());
         buff_OS.flush();
     }
     
+    public void sendMessage(String message)
+    {
+        
+        try
+        {
+            buff_OS.write(message.getBytes());
+            buff_OS.flush();
+            mainClient.writelog(message);
+        }
+        catch(IOException e)
+        {
+            System.out.println("Sending message failed");
+        }
+    }
+    
     public class ClientListen extends Thread{
         
         public void run()
         {
-            if(clientku!=null){ 
                 try {
                     buff_read = new BufferedReader(new InputStreamReader(link.getInputStream()));
-                } catch (IOException ex) {
+                } catch (NullPointerException e) {
                     
+                } catch (IOException ex) {
+                   
                 }
+                //String messageku = null;
                 while(true){   
                     try
                     {
                         String messageku = buff_read.readLine();
-                        //ser.sendToClient(message);
-                    }
-                        catch(IOException e)
+                        if(messageku.contains("LISTUSER-"))
                         {
-                            System.out.println("Masalah pada Thread client");
+
+                            String[] userGabung = messageku.split("-");
+                            String[] listUser = userGabung[1].split(":");
+                            for(int i=0; i<listUser.length; i++)
+                            {
+                                mainClient.writeuser(listUser[i]+"\n");
+                                System.out.println(listUser[i]);
+                            }
+
+                        }
+                        else if(messageku.contains("FROM:"))
+                        {
+                            String[] pesan = messageku.split(":");
+                            mainClient.writelog(pesan[1] + pesan[2]);
+                        }
+                        else if (messageku.equalsIgnoreCase("BYE"))
+                        {
+                            mainClient.dissco();
                         }
 
-                    if (messageku.equalsIgnoreCase("QUIT"))
-                    {
-                        mainClient.dissco();
+                        else
+                        {
+                            mainClient.writelog(messageku);
+                        }
                     }
-
-                    else
+                    catch(IOException e)
                     {
-                        mainClient.writelog(messageku);
+                        System.out.println("Masalah pada Thread client");
                     }
-
+                    
+                    /*
+                    try{
+                        
+                    }
+                    catch(NullPointerException ex)
+                    {
+                        System.out.println("Pesan Null");
+                    }
+                    */
                 }
-            }
         }
-    }
-    
-    
-    
-   
+    }    
 }

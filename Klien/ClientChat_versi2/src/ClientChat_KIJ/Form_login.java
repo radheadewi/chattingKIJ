@@ -45,6 +45,15 @@ public class Form_login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        ip_txt.setText("10.151.43.109");
+        ip_txt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ip_txtActionPerformed(evt);
+            }
+        });
+
+        port_txt.setText("6666");
+
         jLabel1.setText("IP SERVER");
 
         jLabel2.setText("PORT SERVER");
@@ -147,6 +156,10 @@ public class Form_login extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void ip_txtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ip_txtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ip_txtActionPerformed
 
     /**
      * @param args the command line arguments
