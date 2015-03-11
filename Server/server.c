@@ -77,16 +77,25 @@ struct node *cek_nama(char *nama)
     return pntr;
 }
 
-char ListAll(){
+char* ListAll(){
+    printf("hallo\n");
     struct node *pntr;
-    char *listnya="LISTUSER-";
+    printf("hallo1\n");
+    char listnya[100]="LISTUSER-";
+    printf("hallo2\n");
     pntr=head;
     while(pntr->next!=tail){
         pntr=pntr->next;
+        printf("hallo23\n");
         strcat(listnya,pntr->username);
+        printf("%s\n",pntr->username );
+        printf("hallo24\n");
         strcat(listnya,":");
+        printf("hallo25\n");
     }
-    return *listnya;
+    printf("100\n");
+    printf("%s\n",listnya );
+    return listnya;
 }
 
 struct node *cek_id(int id_socket)
@@ -131,56 +140,73 @@ void *connection_handler(void *socket_desc)
     int sock = *(int*)socket_desc;
     int read_size;
     char *message , client_message[2000];
-     
+    printf("1\n");
     //Send some messages to the client
     message = "Koneksi Telah Terbuat. Masukkan Username : ";
     write(sock , message , strlen(message));
-
+    printf("2\n");
     read_size = recv(sock, client_message, 2000, 0);
     // end of string
     client_message[read_size] = '\0';
+    printf("%s\n",client_message );
+    tmp
      //Cek Login ------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    if(strcmp(client_message,"raga")==0 || strcmp(client_message,"randy")==0 || strcmp(client_message,"fandy")==0 || strcmp(client_message,"radhea")==0 ){
+//    if(strcmp(client_message,"raga")==0 || strcmp(client_message,"randy")==0 || strcmp(client_message,"fandy")==0 || strcmp(client_message,"radhea")==0 ){
   //          //login array
 
      /*     strcat(login,":");
           strcat(login,client_message);
           write(new_sd, login, strlen(login));
     */
+  //        printf("saya\n");
 
     //Masukkan ke List------------>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+printf("3\n");
         add(sock, client_message);
-
-    }
+printf("3.1\n");
+    //}
     //-----------
     //char data_user[3000] = "";
     char *data_user = "Username : ";
-    strcat(data_user, client_message);
+    printf("3.2\n");
+    printf("%s\n",data_user );
+    printf("%s\n",client_message );
+  //  strcat(data_user, client_message);
+    printf("3.3\n");
     write(sock , data_user , strlen(client_message));
-    
+    printf("4\n");
     //clear the message buffer
     memset(client_message, 0, 2000);
      
     //Receive a message from client
     while( (read_size = recv(sock , client_message , 2000 , 0)) > 0 )
     {
+        printf("%s\n",client_message);
         char *tmp1, *tmp2, *tmp3;
         tmp1 = strtok(client_message, ":");
-        
+        printf("5\n");
         if(strcmp(client_message,"REFRESH") == 0)
         {
-            char *list_user;
+            char list_user[100];
+            printf("5.1\n");
             // Disini string untuk list--->>>>>>>>>>>>>>>>
-            char *tmp = ListAll();
+            char tmp[100] ;
+            strcpy(tmp,ListAll());
+            printf("5.2\n");
             strcpy(list_user,tmp);
+            printf("5.3\n");
             //input variabel list_user;
-
+            printf("%s\n",list_user);
+            printf("5.4\n");
             write(sock, list_user, strlen(list_user));
+            printf("5.5\n");
+            printf("%s\n",list_user );
             memset(list_user,0,3000);
+            printf("6\n");
+
         }
-        // Untuk char harus TalkTo , talkto, TALKTO.
+                // Untuk char harus TalkTo , talkto, TALKTO.
         else if(strcmp(tmp1, "TALKTO") == 0)
         {
             // tmp1 = TALKTO
@@ -201,7 +227,10 @@ void *connection_handler(void *socket_desc)
             strcat(data_kembalian,":");
             strcat(data_kembalian,tmp3);
             write(sock , data_kembalian , strlen(data_kembalian));
+            printf("7\n");
+           
         }
+        
         else if(strcmp(client_message,"BYE") == 0)
         {
             char *bye = "Client terputus";
@@ -211,9 +240,17 @@ void *connection_handler(void *socket_desc)
             fflush(stdout);
             break;
         }
+        else if( tmp1 == NULL)
+        {
+            char *bye = "NOTE : Data yang dikirim kosong";
+            write(sock , bye , strlen(bye));
+        }
+        else
+        {
 
+        }
     }
-    if(read_size <= 0)
+    if(read_size == -1)
     {
         perror("recv failed");
     }
@@ -258,7 +295,7 @@ int main()
     printf("Listen()ing for connections...\n");
     
     status =  listen(socketfd, 5);
-    if (status == -1)  printf("Listen()ing error\n");
+    if (status == -1)  printf("Listen()ing error888888\n");
 
   
     int new_sd;
@@ -266,28 +303,36 @@ int main()
     socklen_t addr_size = sizeof(their_addr);
     
     pthread_t thread_id;
-
+    init();
 
     while(new_sd = accept(socketfd, (struct sockaddr *)&their_addr, &addr_size)) 
     {
         if (new_sd == -1)
         {
             printf("Listen()ing error\n");
-            break;
+            //break;
         }
-        else
+     /*   else
         {
             printf("Connection accepted. Using new socketfd : %d\n", new_sd );
-            int cek = pthread_create( &thread_id , NULL ,  connection_handler , (void*) &new_sd);
-            if(cek < 0)
-            {
-                printf("Gagal membuat thread");
-                return 1;
-            }
-            else
-                printf("Thread %d telah dibuat.\n",new_sd);
         }
-
+*/      else { 
+            printf("Connection accepted. Using new socketfd : %d\n", new_sd );
+            printf("asdadsadasdad\n"); 
+            int cek = pthread_create( &thread_id , NULL , connection_handler , (void*) &new_sd); 
+            if(cek < 0) { 
+                printf("Gagal membuat thread"); 
+                return 1; 
+            } 
+            
+            printf("asdadad\n"); 
+        }
+    /*    if( pthread_create( &thread_id , NULL ,  connection_handler , (void*) &new_sd) < 0)
+        {
+            perror("could not create thread");
+            return 1;
+        }
+*/
         
     }
 
