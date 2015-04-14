@@ -41,7 +41,8 @@ public class Form_login extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        ip_txt.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        ip_txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        ip_txt.setText("192.168.1.122");
         ip_txt.setAutoscrolls(false);
         ip_txt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -51,6 +52,7 @@ public class Form_login extends javax.swing.JFrame {
         getContentPane().add(ip_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 150, 210, 30));
 
         port_txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        port_txt.setText("9999");
         port_txt.setAutoscrolls(false);
         getContentPane().add(port_txt, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 220, 210, 30));
 
@@ -110,6 +112,7 @@ public class Form_login extends javax.swing.JFrame {
         username = this.username_txt.getText().trim();
         if(username.length() == 0) return;
         try {            
+            //Main_client UIclient = new Main_client();
             client = new myEchoClient(InetAddress.getByName(ip),port,username,this);
             client.makeClient();
     
@@ -119,8 +122,8 @@ public class Form_login extends javax.swing.JFrame {
             Logger.getLogger(Form_login.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        Main_client UIclient = new Main_client(client);
-        UIclient.show();
+        //Main_client UIclient = new Main_client();
+        //UIclient.show();
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 

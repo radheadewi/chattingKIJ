@@ -13,8 +13,8 @@ import java.lang.Math;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 public class myEchoClient {
-    public Form_login clientku= null;
-    public Main_client mainClient=null;
+    Form_login clientku= null;
+    Main_client mainClient;
     private int PORT;
     private InetAddress host;
     private BufferedReader buff_read;
@@ -40,11 +40,15 @@ public class myEchoClient {
         this.host = host;
         this.PORT = PORT;
         this.username = nama;
+        //this.mainClient = main;
     }
     public void makeClient() throws IOException
     {
+        
         try
         {
+            mainClient = new Main_client(this, username);
+            mainClient.show();
             link = new Socket(host, PORT);
             buff_OS = new BufferedOutputStream(link.getOutputStream());    
         }
@@ -60,13 +64,16 @@ public class myEchoClient {
     }
     
     public void sendMessage(String message)
-    {
-        
+    {        
         try
         {
+            String[] pecah = message.split(":");
+            //String tujuan = pecah[1];
+            String pesan = pecah[2];
+            mainClient.writelog(username + " : " + pesan);
+            //mainClient.writelog(message);
             buff_OS.write(message.getBytes());
-            buff_OS.flush();
-            mainClient.writelog(message);
+            buff_OS.flush(); 
         }
         catch(IOException e)
         {
@@ -81,6 +88,7 @@ public class myEchoClient {
         double coba = Math.pow((double)alpha, (double)privateX);
         publicY = new BigDecimal(coba).toBigInteger();
     }
+    
     public BigInteger getKey(BigInteger kunci_lawan)
     {
         double main_key = Math.pow(kunci_lawan.doubleValue(), (double)privateX);
@@ -111,31 +119,56 @@ public class myEchoClient {
                     try
                     {
                         String messageku = buff_read.readLine();
+                        System.out.println("ini message :" + messageku);
                         if(messageku.contains("LISTUSER-"))
                         {
-
+                            System.out.println(messageku);
                             String[] userGabung = messageku.split("-");
                             String[] listUser = userGabung[1].split(":");
+                            System.out.println("User Gabung = " + listUser.length);
                             for(int i=0; i<listUser.length; i++)
                             {
-                                mainClient.writeuser(listUser[i]+"\n");
-                                System.out.println(listUser[i]);
+                                try{
+                                    System.out.println(listUser[i]+ " >> haha <<");
+                                    mainClient.writeuser(listUser[i]+"\n"); 
+                                    //System.out.println("cek mandek");
+                                }
+                                catch(NullPointerException e){
+                                    
+                                }   
                             }
-
                         }
+                        /*
+                        else if (messageku.contains("TALKTO:"))
+                        {
+                            System.out.println("Mlebu Talk to bro");
+                            String[] pecah = messageku.split(":");
+                            String tujuan = pecah[1];
+                            String pesan = pecah[2];
+                            mainClient.writelog(username + ":" + pesan);
+                        }
+                        */
                         else if(messageku.contains("FROM:"))
                         {
                             String[] pesan = messageku.split(":");
+                            System.out.println(pesan[1] + pesan[2]);
                             mainClient.writelog(pesan[1] + pesan[2]);
                         }
                         else if (messageku.equalsIgnoreCase("BYE"))
                         {
                             mainClient.dissco();
                         }
-
-                        else
+                        
+                        else 
                         {
-                            mainClient.writelog(messageku);
+                            System.out.println("Mlebu else ngisor");
+                            try{
+                                  mainClient.writelog(messageku);  
+                            }
+                            catch(NullPointerException e){
+                                    
+                            }
+                            
                         }
                     }
                     catch(IOException e)
@@ -143,15 +176,6 @@ public class myEchoClient {
                         System.out.println("Masalah pada Thread client");
                     }
                     
-                    /*
-                    try{
-                        
-                    }
-                    catch(NullPointerException ex)
-                    {
-                        System.out.println("Pesan Null");
-                    }
-                    */
                 }
         }
     }    
