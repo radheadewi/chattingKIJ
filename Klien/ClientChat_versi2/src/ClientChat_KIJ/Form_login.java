@@ -17,6 +17,7 @@ public class Form_login extends javax.swing.JFrame {
 
     myEchoClient client;
     String username;
+    
 
     public Form_login() {
         initComponents();

@@ -8,6 +8,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.Random;
+import java.lang.Math;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 public class myEchoClient {
     public Form_login clientku= null;
     public Main_client mainClient=null;
@@ -20,6 +24,12 @@ public class myEchoClient {
     public Socket link = null;
     public String username;
     private String messageku;
+    //Variabel Diffie Hellman
+    public int q =929;
+    public int alpha = 7;
+    public int privateX;
+    public BigInteger publicY;
+    //BigInteger publicY;
     myEchoClient()
     {
         
@@ -64,6 +74,27 @@ public class myEchoClient {
         }
     }
     
+    public void diffie_hellman()
+    {
+        int min = 11;
+        privateX = random(q, min);
+        double coba = Math.pow((double)alpha, (double)privateX);
+        publicY = new BigDecimal(coba).toBigInteger();
+    }
+    public BigInteger getKey(BigInteger kunci_lawan)
+    {
+        double main_key = Math.pow(kunci_lawan.doubleValue(), (double)privateX);
+        BigInteger kunci = new BigDecimal(main_key).toBigInteger();
+        BigInteger bigin = new BigInteger(String.valueOf(q));;
+        return kunci.mod(bigin);
+    }
+    
+    public int random(int max, int min)
+    {
+        Random rand = new Random();
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+        return randomNum;
+    }
     public class ClientListen extends Thread{
         
         public void run()

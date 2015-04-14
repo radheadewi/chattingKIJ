@@ -152,7 +152,7 @@ public class Main_client extends javax.swing.JFrame {
     
     private void Send_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Send_btnActionPerformed
         
-        klien.sendMessage("TalkTo:"+talkTo.getText()+":"+message_txt.getText()+"\r\n");
+        klien.sendMessage("TALKTO:"+talkTo.getText()+":"+message_txt.getText()+"\r\n");
         message_txt.setText("");
         
     }//GEN-LAST:event_Send_btnActionPerformed
