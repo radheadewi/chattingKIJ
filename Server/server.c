@@ -28,6 +28,7 @@ void init()
     tail=(struct node *)malloc (sizeof(*tail));
     head->next=tail;
     tail->next=tail;
+    //tail->next = NULL;
 }
 
 struct node* add(int sock, char nama[])
@@ -41,12 +42,13 @@ struct node* add(int sock, char nama[])
     t->sock_id=sock;
 
     strcpy(t->username,nama);
+    
     t->next=tail;
     pntr->next=t;
     contuser=contuser+1;
     return pntr;
     /* data */
-};
+}
 
 
 void delete(struct node *pntr)
@@ -54,9 +56,8 @@ void delete(struct node *pntr)
     struct node *baru,*maju;
     //jika node ada di depan
     maju = pntr;
-    while(maju != NULL)
+    while(maju != tail)
     {
-
         if(pntr->sock_id == head->sock_id)
         {
             baru = pntr;
