@@ -26,37 +26,50 @@ void init()
 {
     head=(struct node *)malloc(sizeof(*head));
     tail=(struct node *)malloc (sizeof(*tail));
+    head = NULL;
+    tail = NULL;
     head->next=tail;
-    tail->next=tail;
-    //tail->next = NULL;
+    //tail->next=tail;
+    tail->next = NULL;
 }
 
 struct node* add(int sock, char nama[])
 {
-    struct node *pntr;
-    struct node *t;
-    pntr=head;
-    while (pntr->next!=tail ) pntr=pntr->next;
+    struct node *t, *temp;
 
     t=(struct node *)malloc(sizeof(*t));
     t->sock_id=sock;
-
     strcpy(t->username,nama);
-    
-    t->next=tail;
-    pntr->next=t;
+    t->next = NULL;
+    /* Jika node berisi NULL */
+    if(head == NULL)
+    {
+        head = t;
+        contuser = contuser+1;
+        return t;
+    }
+    else if(tail == NULL)
+    {
+        tail = t;
+        contuser = contuser+1;
+        return t;
+    }
+
+    temp = tail;
+    temp->next = t;
+    tail = t;
+    //t->next=tail;
     contuser=contuser+1;
-    return pntr;
+    return t;
     /* data */
 }
-
 
 void delete(struct node *pntr)
 {
     struct node *baru,*maju;
     //jika node ada di depan
     maju = pntr;
-    while(maju != tail)
+    while(maju->sock_id != tail->sock_id)
     {
         if(pntr->sock_id == head->sock_id)
         {
@@ -80,9 +93,10 @@ void delete(struct node *pntr)
 
             baru = pntr;
             tail = maju;
-            maju->next = NULL;
-            contuser=contuser-1;
+            //maju->next = NULL;
             free(baru);
+            contuser=contuser-1;
+            break;
         }
         else
         {
