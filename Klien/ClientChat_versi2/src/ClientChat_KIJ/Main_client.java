@@ -2,17 +2,6 @@ package ClientChat_KIJ;
 
 import java.net.*;
 import java.io.*;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.*;
-import java.awt.event.*;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.io.FileReader;
-
 
 public class Main_client extends javax.swing.JFrame {
     private Socket socket = null;
