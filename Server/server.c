@@ -51,11 +51,51 @@ struct node* add(int sock, char nama[])
 
 void delete(struct node *pntr)
 {
-    struct node *baru;
-    baru=pntr->next;
-    pntr->next=pntr->next->next;
-    contuser=contuser-1;
-    free(baru);
+    struct node *baru,*maju;
+    //jika node ada di depan
+    maju = pntr;
+    while(maju != NULL)
+    {
+
+        if(pntr->sock_id == head->sock_id)
+        {
+            baru = pntr;
+            pntr = pntr->next;
+            //baru=pntr->next;
+            //pntr->next=pntr->next->next;
+            head = pntr;
+            baru = NULL;
+            free(baru);
+            contuser=contuser-1;
+            break;
+        }
+
+        if(pntr->sock_id == tail->sock_id)
+        {
+            while(maju->next != pntr)
+            {
+                maju = maju->next;
+            }
+
+            baru = pntr;
+            tail = maju;
+            maju->next = NULL;
+            contuser=contuser-1;
+            free(baru);
+        }
+        else
+        {
+            if(maju->next->sock_id == pntr->sock_id)
+            {
+                baru = pntr;
+                maju->next = maju->next->next;
+                baru = NULL;
+                contuser = contuser - 1;
+                free(baru);
+            }
+        }
+         maju = maju->next;
+    }
 }
 
 struct node *cek_nama(char *nama)
@@ -149,7 +189,7 @@ void *connection_handler(void *socket_desc)
     // end of string
     client_message[read_size] = '\0';
     printf("%s\n",client_message );
-    tmp
+    //tmp
      //Cek Login ------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 //    if(strcmp(client_message,"raga")==0 || strcmp(client_message,"randy")==0 || strcmp(client_message,"fandy")==0 || strcmp(client_message,"radhea")==0 ){
