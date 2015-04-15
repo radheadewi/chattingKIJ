@@ -42,7 +42,7 @@ public class Form_login extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         ip_txt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        ip_txt.setText("192.168.1.109");
+        ip_txt.setText("localhost");
         ip_txt.setAutoscrolls(false);
         ip_txt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

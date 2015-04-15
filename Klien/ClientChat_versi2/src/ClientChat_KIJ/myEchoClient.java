@@ -68,26 +68,35 @@ public class myEchoClient {
     }
     
     public void sendMessage(String message)
-    {        
-        try
-        {
-            String[] pecah = message.split(":");
-            //String tujuan = pecah[1];
-            //String pesan = pecah[2];
-            String tampung_pesan = pecah[2];
-            mainClient.writelog(username + " : " + pecah[2]);
-            System.out.println("ini tampung pesan>>" + tampung_pesan);
-            //mainClient.writelog(message);
-            
-            
-            String kirimEnkripsi = "TALKTO" + ":" + pecah[1] +":" +InstanRc4.encrypt(tampung_pesan.toCharArray());
-            buff_OS.write(kirimEnkripsi.getBytes());
-            buff_OS.flush(); 
+    {       
+        //mainClient.writelog(message);
+        try {
+            if(message.contains("TALKTO:"))
+            {
+                String[] pecah = message.split(":");
+                mainClient.writelog(username + " : " +pecah[2]);
+                System.out.println("panjang pecah 2 >>" + pecah[2].length());
+                System.out.println("isi pecah 2 >>" + pecah[2]);
+                char[] pesanbaru = InstanRc4.encrypt(pecah[2].toCharArray());
+                System.out.println("jumlah pesan >>" + pesanbaru.length);
+                StringBuilder s = new StringBuilder(pesanbaru.length);
+                for (char c : pesanbaru) {
+                    s.append(c);
+                }
+                String pesanString = s.toString();//pesanbaru.toString();
+                String totalPesan = "TALKTO" + ":" + pecah[1] + ":" + pesanString;;
+                buff_OS.write(totalPesan.getBytes());
+                buff_OS.flush();
+            }
+            else
+            {
+                buff_OS.write(message.getBytes());
+                buff_OS.flush();
+            }
+  
+        } catch (IOException ex) {
+            Logger.getLogger(myEchoClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch(IOException e)
-        {
-            System.out.println("Sending message failed");
-        } 
     }
     
     public void diffie_hellman()
@@ -130,7 +139,7 @@ public class myEchoClient {
                     {
                         //System.out.println("z");
                         String messageku = buff_read.readLine();
-                        System.out.println("ini message : " + messageku +"\n");
+                        //System.out.println("ini message : " + messageku +"\n");
                         //System.out.println("q");
                         
                         if(messageku.contains("LISTUSER-"))
@@ -153,15 +162,21 @@ public class myEchoClient {
                         }
                         else if(messageku.contains("FROM:"))
                         {
-                            System.out.println("masuk From>>");
+                            //System.out.println("masuk From>>");
                             String[] pesan = messageku.split(":");
-                            System.out.println(pesan[1]);
                             //System.out.println(pesan[1] + pesan[2]);
                             try{
                                 //char[] plain = InstanRc4.decrypt(pesan[2].toCharArray());
                                 //System.out.println(plain.toString());
-                                mainClient.writelog(pesan[1] + " : " +pesan[2]);
-                                System.out.println(pesan[1] + " : " +pesan[2]);
+                                
+                                char[] plain = InstanRc4.decrypt(pesan[2].toCharArray());
+                                StringBuilder s = new StringBuilder(plain.length);
+                                for (char c : plain) {
+                                    s.append(c);
+                                }
+                                String plaintext = s.toString();
+                                mainClient.writelog(pesan[1] + " : " +plaintext + "\n");
+                                System.out.println("Sudah decrypt >> "+pesan[1] + " : " +plaintext);
                             }
                             catch(NullPointerException e)
                             {
