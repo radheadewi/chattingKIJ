@@ -128,11 +128,14 @@ public class myEchoClient {
                 while(true){   
                     try
                     {
+                        //System.out.println("z");
                         String messageku = buff_read.readLine();
                         System.out.println("ini message : " + messageku +"\n");
+                        //System.out.println("q");
+                        
                         if(messageku.contains("LISTUSER-"))
                         {
-                            System.out.println(messageku);
+                            System.out.println("masuk List User >>");
                             String[] userGabung = messageku.split("-");
                             String[] listUser = userGabung[1].split(":");
                             System.out.println("User Gabung = " + listUser.length);
@@ -148,22 +151,23 @@ public class myEchoClient {
                                 }   
                             }
                         }
-                        /*
-                        else if (messageku.contains("TALKTO:"))
-                        {
-                            System.out.println("Mlebu Talk to bro");
-                            String[] pecah = messageku.split(":");
-                            String tujuan = pecah[1];
-                            String pesan = pecah[2];
-                            mainClient.writelog(username + ":" + pesan);
-                        }
-                        */
                         else if(messageku.contains("FROM:"))
                         {
+                            System.out.println("masuk From>>");
                             String[] pesan = messageku.split(":");
+                            System.out.println(pesan[1]);
                             //System.out.println(pesan[1] + pesan[2]);
-                            char[] plain = InstanRc4.decrypt(pesan[2].toCharArray());
-                            mainClient.writelog(pesan[1] + " : " +plain.toString());
+                            try{
+                                //char[] plain = InstanRc4.decrypt(pesan[2].toCharArray());
+                                //System.out.println(plain.toString());
+                                mainClient.writelog(pesan[1] + " : " +pesan[2]);
+                                System.out.println(pesan[1] + " : " +pesan[2]);
+                            }
+                            catch(NullPointerException e)
+                            {
+                                
+                            }
+                            
                         }
                         else if (messageku.equalsIgnoreCase("BYE"))
                         {
