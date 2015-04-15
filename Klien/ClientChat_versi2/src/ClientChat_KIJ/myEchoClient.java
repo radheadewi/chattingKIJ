@@ -50,6 +50,7 @@ public class myEchoClient {
         
         try
         {
+            InstanRc4 = new RC4("testkey");
             mainClient = new Main_client(this, username);
             mainClient.show();
             link = new Socket(host, PORT);
@@ -75,8 +76,9 @@ public class myEchoClient {
             //String pesan = pecah[2];
             String tampung_pesan = pecah[2];
             mainClient.writelog(username + " : " + pecah[2]);
+            System.out.println("ini tampung pesan>>" + tampung_pesan);
             //mainClient.writelog(message);
-            InstanRc4 = new RC4("testkey");
+            
             
             String kirimEnkripsi = "TALKTO" + ":" + pecah[1] +":" +InstanRc4.encrypt(tampung_pesan.toCharArray());
             buff_OS.write(kirimEnkripsi.getBytes());
@@ -85,9 +87,7 @@ public class myEchoClient {
         catch(IOException e)
         {
             System.out.println("Sending message failed");
-        } catch (RC4.InvalidKeyException ex) {
-            Logger.getLogger(myEchoClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }
     
     public void diffie_hellman()

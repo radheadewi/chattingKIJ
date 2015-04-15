@@ -76,6 +76,7 @@ public class RC4 {
     }
      
     public void setKey(String kunci) throws InvalidKeyException {
+        System.out.println("Ini Kuncinya : " + kunci);
         if (!(kunci.length() >= KEY_MIN_LENGTH && kunci.length() < SBOX_LENGTH)) {
             throw new InvalidKeyException("Key length has to be between "
             + KEY_MIN_LENGTH + " and " + (SBOX_LENGTH - 1));
