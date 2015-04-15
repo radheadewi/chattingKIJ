@@ -12,6 +12,8 @@ import java.util.Random;
 import java.lang.Math;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class myEchoClient {
     Form_login clientku= null;
     Main_client mainClient;
@@ -29,6 +31,7 @@ public class myEchoClient {
     public int alpha = 7;
     public int privateX;
     public BigInteger publicY;
+    public RC4 InstanRc4;
     //BigInteger publicY;
     myEchoClient()
     {
@@ -69,15 +72,21 @@ public class myEchoClient {
         {
             String[] pecah = message.split(":");
             //String tujuan = pecah[1];
-            String pesan = pecah[2];
-            mainClient.writelog(username + " : " + pesan);
+            //String pesan = pecah[2];
+            String tampung_pesan = pecah[2];
+            mainClient.writelog(username + " : " + pecah[2]);
             //mainClient.writelog(message);
-            buff_OS.write(message.getBytes());
+            InstanRc4 = new RC4("testkey");
+            
+            String kirimEnkripsi = "TALKTO" + ":" + pecah[1] +":" +InstanRc4.encrypt(tampung_pesan.toCharArray());
+            buff_OS.write(kirimEnkripsi.getBytes());
             buff_OS.flush(); 
         }
         catch(IOException e)
         {
             System.out.println("Sending message failed");
+        } catch (RC4.InvalidKeyException ex) {
+            Logger.getLogger(myEchoClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -109,6 +118,7 @@ public class myEchoClient {
         {
                 try {
                     buff_read = new BufferedReader(new InputStreamReader(link.getInputStream()));
+                    
                 } catch (NullPointerException e) {
                     
                 } catch (IOException ex) {
@@ -119,7 +129,7 @@ public class myEchoClient {
                     try
                     {
                         String messageku = buff_read.readLine();
-                        System.out.println("ini message :" + messageku);
+                        System.out.println("ini message : " + messageku +"\n");
                         if(messageku.contains("LISTUSER-"))
                         {
                             System.out.println(messageku);
@@ -151,8 +161,9 @@ public class myEchoClient {
                         else if(messageku.contains("FROM:"))
                         {
                             String[] pesan = messageku.split(":");
-                            System.out.println(pesan[1] + pesan[2]);
-                            mainClient.writelog(pesan[1] + pesan[2]);
+                            //System.out.println(pesan[1] + pesan[2]);
+                            char[] plain = InstanRc4.decrypt(pesan[2].toCharArray());
+                            mainClient.writelog(pesan[1] + " : " +plain.toString());
                         }
                         else if (messageku.equalsIgnoreCase("BYE"))
                         {

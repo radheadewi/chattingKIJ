@@ -13,7 +13,8 @@ public class RC4 {
     private int[] sbox;
     private static final int SBOX_LENGTH = 256;
     private static final int KEY_MIN_LENGTH = 5;
-     
+    
+    /*
     public static void main(String[] args) {
         try {
             RC4 rc4 = new RC4("testkey");
@@ -25,7 +26,7 @@ public class RC4 {
                 System.err.println(e.getMessage());
             }
         }
-     
+     */
     public RC4(String key) throws InvalidKeyException {
         setKey(key);
     }
